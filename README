@@ -1,0 +1,6 @@
+First hack at at a reparenting window manager in native JavaScript.
+
+Uses node-x11 for X communication.
+
+Mostly a personal learning project.
+

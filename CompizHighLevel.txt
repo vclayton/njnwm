@@ -1,0 +1,20 @@
+Main: 
+  manager->init()
+  manager->run()
+  manager->fini()
+
+manager::init:
+  screen;
+  modifierHandler;
+  loadPlugins()
+  screen->init(displayName)
+  session->init()
+
+manager::run: eventloop();
+
+manager::fini(): session->close();
+
+
+
+
+
