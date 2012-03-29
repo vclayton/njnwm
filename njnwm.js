@@ -58,7 +58,12 @@ x11.createClient(function(display) {
 
 	function AllocNamedColor(colorMap, name) {
 		var pro = Promise();
-		X.AllocNamedColor(colorMap, name, pro);
+		X.AllocNamedColor({cmap: colorMap, name: name}, pro);
+		return pro.get();
+	}
+	function GetAtomName(atom) {
+		var pro = Promise();
+		X.GetAtomName({atom: atom}, pro);
 		return pro.get();
 	}
 
@@ -66,11 +71,11 @@ x11.createClient(function(display) {
 	var white = display.screen[0].white_pixel;
 	var black = display.screen[0].black_pixel; 
 	var getAtomName = Future.wrap(X.GetAtomName, 1);
-	var allocNamedColor = Future.wrap(X.AllocNamedColor, 2);
+	var allocNamedColor = Future.wrap(X.AllocNamedColor, 1);
 	var windows = {};
 
-	var name37 = getAtomName(37).wait();
-	var name39 = getAtomName(39).wait();
+	var name37 = GetAtomName(37);
+	var name39 = GetAtomName(39);
 
 	console.log("White: ", white);
 	console.log("Atom 37: ", name37);
@@ -90,7 +95,7 @@ x11.createClient(function(display) {
 
 	// Manage Root Window: listen for events, reparent any existing windows
 	var rootEventMask = x11.eventMask.SubstructureRedirect | x11.eventMask.SubstructureNotify | x11.eventMask.StructureNotify;
-	X.ChangeWindowAttributes(root, { eventMask: rootEventMask });
+	X.ChangeWindowAttributes( {window: root, value_mask: { EventMask: rootEventMask }} );
 
 
 	//$this->_execute("xsetroot \-mod 16 18 \-fg rgb:54/6/6 \-bg grey20");
@@ -100,6 +105,10 @@ x11.createClient(function(display) {
 
 	// wid = X.AllocID();
 	// X.CreateWindow(wid, root, 0, 0, cupsize[0]*sqsize, cupsize[1]*sqsize, 1, 1, 0, { backgroundPixel: white, eventMask: KeyPress|Exposure });
+// New style:
+//	X.CreateWindow({ depth: 0, wid: wid, parent: root, x: 10, y: 10, width: 400, height: 300, border_width: 1, _class: 1, visual: 0,
+//                   value_mask: { BackPixel: white, EventMask: mask } });
+
 	// cidBlack = X.AllocID();
 	// cidWhite = X.AllocID();
 	// X.CreateGC(cidBlack, wid,  { foreground: black, background: white } );
