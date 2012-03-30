@@ -109,24 +109,11 @@ x11.createClient(function(display) {
 //	X.CreateWindow({ depth: 0, wid: wid, parent: root, x: 10, y: 10, width: 400, height: 300, border_width: 1, _class: 1, visual: 0,
 //                   value_mask: { BackPixel: white, EventMask: mask } });
 
-	// cidBlack = X.AllocID();
-	// cidWhite = X.AllocID();
-	// X.CreateGC(cidBlack, wid,  { foreground: black, background: white } );
-	// X.CreateGC(cidWhite, wid,  { foreground: white, background: black } );
-	// X.MapWindow(wid);
-
 	var up = 111;
 	var down = 116;
 	var left = 113;
 	var right = 114;
 
-//TODO keykode -> keysym
-/*
-	var up = 98;
-	var down = 104;
-	var left = 100;
-	var right = 102;
-*/
 	X.on('event', function(ev) {
 		console.log('Received '+ev.name+' event: ', ev);
 		switch(ev.type) {
@@ -142,11 +129,11 @@ x11.createClient(function(display) {
 					if (ev.parent == root) {
 						windows[ev.wid] = new Window(X, ev);
 					}
-					console.log("Windows: ", windows);
+//					console.log("Windows: ", windows);
 				}
 				break;
 			case x11.event.MapRequest:
-					console.log("Windows: ", windows);
+//					console.log("Windows: ", windows);
 
 //				if (windows[ev.wid]) {
 					windows[ev.wid].map();
