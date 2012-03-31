@@ -102,18 +102,6 @@ x11.createClient(function(display) {
 //	exec("xsetroot \-mod 16 18 \-fg rgb:54/6/6 \-bg grey20");
 	exec("xhello/hello");
 
-
-	// wid = X.AllocID();
-	// X.CreateWindow(wid, root, 0, 0, cupsize[0]*sqsize, cupsize[1]*sqsize, 1, 1, 0, { backgroundPixel: white, eventMask: KeyPress|Exposure });
-// New style:
-//	X.CreateWindow({ depth: 0, wid: wid, parent: root, x: 10, y: 10, width: 400, height: 300, border_width: 1, _class: 1, visual: 0,
-//                   value_mask: { BackPixel: white, EventMask: mask } });
-
-	var up = 111;
-	var down = 116;
-	var left = 113;
-	var right = 114;
-
 	X.on('event', function(ev) {
 		console.log('Received '+ev.name+' event: ', ev);
 		switch(ev.type) {
@@ -127,7 +115,7 @@ x11.createClient(function(display) {
 				// 		}
 				// 	}
 					if (ev.parent == root) {
-						windows[ev.wid] = new Window(X, ev);
+						windows[ev.window] = new Window(X, ev);
 					}
 //					console.log("Windows: ", windows);
 				}
@@ -136,7 +124,7 @@ x11.createClient(function(display) {
 //					console.log("Windows: ", windows);
 
 //				if (windows[ev.wid]) {
-					windows[ev.wid].map();
+					windows[ev.window].map();
 //				}
 				break;
 			case x11.event.MotionNotify:
