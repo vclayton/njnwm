@@ -38,6 +38,16 @@ var WindowManager = function() {
 		self.X.on('error', function(err) {
 			console.log("Error: ", err);
 		}).on('event', function(ev) {
+			switch(ev.type) {
+				case x11.event.ConfigureRequest:
+					self.X.ConfigureWindow({window: ev.window, value_mask: {Width: ev.width, Height: ev.height}});
+					break;
+				case x11.event.MapRequest:
+					if (!self.frames[ev.window]) {
+						self.manageWindow(ev.window);
+					}
+					break;
+			}
 			console.log("Event: ", ev);
 		});
 		console.log("xinit done");
@@ -87,7 +97,7 @@ var WindowManager = function() {
 			self.frames[fid] = 1;
 			console.log("Frames: ", self.frames);
 			var winX, winY;
-			var dragStart;
+			var dragStart = null;
 			winX = parseInt(Math.random()*300);
 			winY = parseInt(Math.random()*300);
 			
@@ -113,9 +123,12 @@ var WindowManager = function() {
 						dragStart = null;
 					} else if (ev.type == x11.event.MotionNotify) {
 						console.log("Drag move");
-						winX = dragStart.winX + ev.root_x - dragStart.rootx;
-						winY = dragStart.winY + ev.root_y - dragStart.rooty;
-						self.X.ConfigureWindow({window:fid, value_mask: { X:winX, Y:winY}});
+						if (dragStart !== null) {
+							console.log(dragStart);
+							winX = dragStart.winX + ev.root_x - dragStart.rootx;
+							winY = dragStart.winY + ev.root_y - dragStart.rooty;
+							self.X.ConfigureWindow({window:fid, value_mask: { X:winX, Y:winY}});
+						}
 					}
 				});
 				self.X.ChangeSaveSet({mode: 1, window: wid});
